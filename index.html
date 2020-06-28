@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <head>
+
+    </head>
+    <body>
+        <div id="my-scroll" style="overflow-y: scroll;height: 500px;">
+            <div style="height: 200vh">
+                <input id="my-input" type="text"/>
+            </div>
+        </div>
+        
+    </body>
+    <script>
+        function debounce(fn, time) {
+            let timer = null
+            return function(...args) {
+                const self = this
+                if(timer) {
+                    clearTimeout(timer)
+                } else {
+                    fn.call(self, args);
+                }
+
+                timer = setTimeout(function() {
+                    fn.call(self, args)
+                }, time)
+            }
+        }
+
+        function throttle(fn, time) {
+            const self = this
+            let timer = null
+            return function(...args) {
+               if(!timer) {
+                    timer = setTimeout(function() {
+                        fn.call(self, args)
+                        timer = null
+                    }, time)
+               }
+            }
+        }
+
+        var handleInput = debounce(function(val) {
+            console.log(val)
+        }, 1000)
+
+        var handleScroll = throttle(function(val) {
+            console.log(this, val)
+        }, 500)
+
+        document.getElementById('my-input').addEventListener('input', function() {
+            handleInput('hahah')
+        })
+
+        document.getElementById('my-scroll').addEventListener('scroll', function() {
+            handleScroll(new Date())
+        })
+    </script>
+</html>
