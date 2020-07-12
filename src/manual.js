@@ -9,12 +9,10 @@ function debounce(fn, time) {
         const self = this
         if(timer) {
             clearTimeout(timer)
-        } else {
-            fn.call(self, args);
         }
 
         timer = setTimeout(function() {
-            fn.call(self, args)
+            fn.apply(self, args)
         }, time)
     }
 }
@@ -41,9 +39,9 @@ function throttle(fn, time) {
 
 /**
  * 深拷贝
- * @param {*} target 
+ * @param {*} fn 
  */
-function deepClone(target) {}
+function deepClone(fn) {}
 
 const oriObj = {
     name: 'andy',
@@ -84,15 +82,63 @@ function PromiseAll(arr) {
 
 /**
  * instanceof
- * @param {*} target 
+ * @param {*} fn 
  */
-Object.prototype.isInstanceOf = function(target) {
+Object.prototype.isInstanceOf = function(fn) {
     let proto = Object.getPrototypeOf(this)
     while(proto) {
-        if(proto === target.prototype) {
+        if(proto === fn.prototype) {
             return true
         } 
         proto = proto = Object.getPrototypeOf(proto)
     }
     return false
+}
+
+/**
+ * call函数
+ */
+Function.prototype.myCall = function(context, ...args) {
+    const fn = Symbol()
+    context = context || window
+    args = args || []
+    context[fn] = this
+    const result = context[fn](...args)
+    delete context[fn]
+    return result
+}
+
+/**
+ * apply函数
+ */
+Function.prototype.myApply = function(context, args) {
+    const fn = Symbol()
+    context = context || window
+    args = args || []
+    context[fn] = this
+    const result = context[fn](...args)
+    delete context[fn]
+    return result
+}
+
+/**
+ * bind函数
+ */
+Function.prototype.myBind = function(context, ...args) {
+    const self = this
+    context = context || window
+    args = args || []
+    return function bindedFn(...newArgs) {
+        if(this instanceof bindedFn) {
+            return new self(...args, ...newArgs)
+        }
+        return self.call(context, ...args)
+    }
+}
+
+/**
+ * new操作符
+ */
+function myNew(fn) {
+
 }
