@@ -1,4 +1,4 @@
-const Pubsub = require('./Pubsub');
+const Pubsub = require('./pubsub/Pubsub');
 require('./manual')
 const obj = {
     name: 'newThis',
